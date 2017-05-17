@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import functools
 
 
@@ -15,3 +17,5 @@ def my_function():
     print('im the function')
 
 my_function()
+
+# trial
