@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import sqlite3
+import sys
+sys.path.insert(0, 'A:/Internship - Summer 2017/Python flask/section 6')
+from db import db
 
 
-class UserModel:
+class UserModel(db.Model):
+
+    # the following code creates a mapping between the attributes of the objects of this class listed in init method, and the columns of the db table users
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80))
+    password = db.Column(db.String(80))
 
     def __init__(self, _id, username, password):
         self.id = _id

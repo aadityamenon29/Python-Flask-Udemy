@@ -1,10 +1,16 @@
 UserRegister - post
 UserModel - find_by_username
-AUTHENTICATE
+UserRegister - post
 UserModel - find_by_username
 UserRegister - post
 UserModel - find_by_username
 AUTHENTICATE
 UserModel - find_by_username
+IDENTITY
+GET ITEM
+IDENTITY
+GET ITEM
+IDENTITY
+GET ITEM
 IDENTITY
 GET ITEM

@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
+import sys
+sys.path.insert(0, 'A:/Internship - Summer 2017/Python flask/section 6')
 from models.item import ItemModel
 import sqlite3
 
@@ -30,7 +32,7 @@ class Item(Resource):
         data = Item.parser.parse_args()
         item = ItemModel(name, data['price'])
         try:
-            item.insert()
+            item.save_to_db()
         except:
             return {'msg': 'exception thrown'}, 500
 
@@ -38,30 +40,23 @@ class Item(Resource):
         return item.jsonify(), 201
 
     def delete(self, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "DELETE FROM items WHERE name = ?"
-        result = cursor.execute(query, (name,))
-        connection.commit()
-        connection.close()
-        return {'msg': 'item is deleted!'}
+        item = ItemModel.find_by_name(name)
+        if item:
+            item.delete()
+        return {'msg': 'item deleted yo'}
 
     def put(self, name):
         # data = request.get_json()
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
-        updated_item = ItemModel(name, data['price'])
+
         if item is None:
-            try:
-                updated_item.insert()
-            except:
-                return {'msg': 'an error occured while inserting'}, 500
+            item = ItemModel(name, data['price'])
         else:
-            try:
-                updated_item.update()
-            except:
-                return {'msg': 'an error occured while updating'}, 500
-        return updated_item.jsonify()
+            item.price = data['price']
+
+        item.save_to_db()
+        return item.jsonify()
 
 
 class ItemList(Resource):

@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import sys
+sys.path.insert(0, 'A:/Internship - Summer 2017/Python flask/section 6')
+from db import db
 import sqlite3
 
 
-class ItemModel:
+class ItemModel(db.Model):
+
+    __tablename__ = 'items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(90))
+    price = db.Column(db.Float(precision=2))
+
     def __init__(self, name, price):
         self.name = name
         self.price = price
@@ -13,28 +23,12 @@ class ItemModel:
 
     @classmethod
     def find_by_name(cls, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "SELECT * FROM items where name = ?"
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-        if row:
-            return cls(*row)
-        return None
+        return cls.query.filter_by(name=name).first()
 
-    def insert(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "INSERT INTO items VALUES(?,?)"
-        result = cursor.execute(query, (self.name, self.price))
-        connection.commit()
-        connection.close()
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
-    def update(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "UPDATE items SET price = ? WHERE name = ?"
-        result = cursor.execute(query, (self.price, self.name))
-        connection.commit()
-        connection.close()
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
